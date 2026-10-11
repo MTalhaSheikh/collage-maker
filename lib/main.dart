@@ -5,6 +5,7 @@ import 'blender.dart';
 import 'data.dart';
 import 'editor.dart';
 import 'templates.dart';
+import 'video_maker.dart';
 
 void main() => runApp(const App());
 
@@ -73,6 +74,22 @@ class Home extends StatelessWidget {
         ),
       );
 
+  Widget _wide(IconData i, String title, String sub, VoidCallback f, Color c) => InkWell(
+        borderRadius: BorderRadius.circular(22),
+        onTap: f,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(22), gradient: LinearGradient(colors: [c.withOpacity(.3), c.withOpacity(.08)]), border: Border.all(color: Colors.white12)),
+          child: Row(children: [
+            Container(padding: const EdgeInsets.all(10), decoration: BoxDecoration(color: c.withOpacity(.35), borderRadius: BorderRadius.circular(14)), child: Icon(i, size: 22)),
+            const SizedBox(width: 14),
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(title, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15)), Text(sub, style: const TextStyle(color: Colors.white60, fontSize: 12))]),
+            const Spacer(),
+            const Icon(Icons.chevron_right, color: Colors.white54),
+          ]),
+        ),
+      );
+
   @override
   Widget build(BuildContext context) => Scaffold(
         body: Stack(children: [
@@ -85,7 +102,7 @@ class Home extends StatelessWidget {
                 Row(children: [
                   Text('Collage Maker', style: GoogleFonts.pacifico(fontSize: 24)),
                   const SizedBox(width: 8),
-                  Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2), decoration: BoxDecoration(color: Colors.white12, borderRadius: BorderRadius.circular(10)), child: const Text('v7', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
+                  Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2), decoration: BoxDecoration(color: Colors.white12, borderRadius: BorderRadius.circular(10)), child: const Text('v12', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                 ]),
                 Expanded(
                   child: LayoutBuilder(builder: (_, bc) {
@@ -126,6 +143,8 @@ class Home extends StatelessWidget {
                   const SizedBox(width: 14),
                   _tile(Icons.blur_on_rounded, 'Photo blender', 'Fade & mix photos', () => _go(context, 2, (p) => BlenderPage(imgs: p)), kPink),
                 ]),
+                const SizedBox(height: 14),
+                _wide(Icons.movie_creation_rounded, 'Video maker', 'Templates, transitions & music', () => Navigator.push(context, MaterialPageRoute(builder: (_) => const VideoMakerPage())), const Color(0xFF29B6F6)),
               ]),
             ),
           ),
