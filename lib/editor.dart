@@ -622,7 +622,7 @@ class _EditorState extends State<Editor> {
           padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
           child: SafeArea(
             child: Column(children: [
-              SizedBox(height: selC >= 0 || (ip && sel >= 0) || tab == 0 || tab == 1 || tab == 3 || tab == 5 ? 150 : 100, child: Align(alignment: Alignment.centerLeft, child: selC >= 0 ? _cardPanel() : (ip && sel >= 0 && sel < items.length && tab != 3) ? _itemPanel() : _panel())),
+              SizedBox(height: selC >= 0 || (ip && sel >= 0) || tab == 0 || tab == 1 || tab == 3 || tab == 5 ? 150 : 100, child: AnimatedSwitcher(duration: const Duration(milliseconds: 220), child: KeyedSubtree(key: ValueKey('$tab-${selC >= 0}-${ip && sel >= 0}'), child: Align(alignment: Alignment.centerLeft, child: selC >= 0 ? _cardPanel() : (ip && sel >= 0 && sel < items.length && tab != 3) ? _itemPanel() : _panel())))),
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 for (var i = 0; i < tabs.length; i++)
                   InkWell(

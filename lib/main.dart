@@ -4,8 +4,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'blender.dart';
 import 'data.dart';
 import 'editor.dart';
+import 'fx.dart';
 import 'templates.dart';
 import 'video_maker.dart';
+import 'package:flutter/cupertino.dart' show CupertinoPageTransitionsBuilder;
 
 void main() => runApp(const App());
 
@@ -23,6 +25,7 @@ class App extends StatelessWidget {
           appBarTheme: AppBarTheme(backgroundColor: kBg, elevation: 0, scrolledUnderElevation: 0, titleTextStyle: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.w600)),
           sliderTheme: const SliderThemeData(activeTrackColor: kPink, inactiveTrackColor: Colors.white12, thumbColor: Colors.white, trackHeight: 3),
           chipTheme: ChipThemeData(backgroundColor: Colors.white10, selectedColor: kViolet, side: BorderSide.none, shape: const StadiumBorder(), labelStyle: GoogleFonts.poppins(fontSize: 13)),
+          pageTransitionsTheme: const PageTransitionsTheme(builders: {TargetPlatform.android: FadeForwardsPageTransitionsBuilder(), TargetPlatform.iOS: CupertinoPageTransitionsBuilder()}),
         ),
         home: const Home(),
       );
@@ -43,18 +46,18 @@ class Home extends StatelessWidget {
 
   Widget _fan(Tpl t, double a, double dx, double dy, double w) => Align(
         alignment: Alignment(dx, dy),
-        child: Transform.rotate(
+        child: Floating(phase: (dx + 1) / 2, child: Transform.rotate(
           angle: a,
           child: Container(
             width: w,
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(18), boxShadow: const [BoxShadow(blurRadius: 24, color: Colors.black54, offset: Offset(0, 10))]),
             child: TplPreview(t),
           ),
-        ),
+        )),
       );
 
-  Widget _tile(IconData i, String title, String sub, VoidCallback f, Color c) => Expanded(
-        child: InkWell(
+  Widget _tile(IconData i, String title, String sub, VoidCallback f, Color c, [int idx = 0]) => Expanded(
+        child: FadeSlide(index: idx, child: Pressable(child: InkWell(
           borderRadius: BorderRadius.circular(22),
           onTap: f,
           child: Container(
@@ -71,10 +74,10 @@ class Home extends StatelessWidget {
               Text(sub, style: const TextStyle(color: Colors.white60, fontSize: 12)),
             ]),
           ),
-        ),
+        ))),
       );
 
-  Widget _wide(IconData i, String title, String sub, VoidCallback f, Color c) => InkWell(
+  Widget _wide(IconData i, String title, String sub, VoidCallback f, Color c) => FadeSlide(index: 3, child: Pressable(child: InkWell(
         borderRadius: BorderRadius.circular(22),
         onTap: f,
         child: Container(
@@ -88,13 +91,14 @@ class Home extends StatelessWidget {
             const Icon(Icons.chevron_right, color: Colors.white54),
           ]),
         ),
-      );
+      )));
 
   @override
   Widget build(BuildContext context) => Scaffold(
         body: Stack(children: [
           Positioned(top: -90, left: -70, child: _glow(kViolet, 340)),
           Positioned(top: 140, right: -110, child: _glow(kPink, 320)),
+          const Positioned.fill(child: FxOverlay('stars')),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(22, 10, 22, 22),
@@ -102,7 +106,7 @@ class Home extends StatelessWidget {
                 Row(children: [
                   Text('Collage Maker', style: GoogleFonts.pacifico(fontSize: 24)),
                   const SizedBox(width: 8),
-                  Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2), decoration: BoxDecoration(color: Colors.white12, borderRadius: BorderRadius.circular(10)), child: const Text('v12', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
+                  Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2), decoration: BoxDecoration(color: Colors.white12, borderRadius: BorderRadius.circular(10)), child: const Text('v14', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                 ]),
                 Expanded(
                   child: LayoutBuilder(builder: (_, bc) {
@@ -120,28 +124,28 @@ class Home extends StatelessWidget {
                   child: Text('Turn your photos into\nbeautiful collages', style: GoogleFonts.poppins(fontSize: 27, fontWeight: FontWeight.w700, height: 1.15)),
                 ),
                 const SizedBox(height: 18),
-                GestureDetector(
+                Pulse(builder: (v) => GestureDetector(
                   onTap: () => _go(context, 20, (p) => Editor(imgs: p)),
-                  child: Container(
+                  child: Pressable(child: Container(
                     height: 60,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(30),
                       gradient: const LinearGradient(colors: [kViolet, kPink]),
-                      boxShadow: [BoxShadow(blurRadius: 26, color: kPink.withOpacity(.45), offset: const Offset(0, 10))],
+                      boxShadow: [BoxShadow(blurRadius: 18 + 16 * v, color: kPink.withOpacity(.3 + .25 * v), offset: const Offset(0, 10))],
                     ),
                     child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                       Icon(Icons.add_photo_alternate_rounded),
                       SizedBox(width: 10),
                       Text('Create collage', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 17)),
                     ]),
-                  ),
-                ),
+                  )),
+                )),
                 const SizedBox(height: 14),
                 Row(children: [
-                  _tile(Icons.dashboard_customize_rounded, 'Templates', '${templates.length} designs', () => Navigator.push(context, MaterialPageRoute(builder: (_) => const TemplatesPage())), kViolet),
+                  _tile(Icons.dashboard_customize_rounded, 'Templates', '${templates.length} designs', () => Navigator.push(context, MaterialPageRoute(builder: (_) => const TemplatesPage())), kViolet, 1),
                   const SizedBox(width: 14),
-                  _tile(Icons.blur_on_rounded, 'Photo blender', 'Fade & mix photos', () => _go(context, 2, (p) => BlenderPage(imgs: p)), kPink),
+                  _tile(Icons.blur_on_rounded, 'Photo blender', 'Fade & mix photos', () => _go(context, 2, (p) => BlenderPage(imgs: p)), kPink, 2),
                 ]),
                 const SizedBox(height: 14),
                 _wide(Icons.movie_creation_rounded, 'Video maker', 'Templates, transitions & music', () => Navigator.push(context, MaterialPageRoute(builder: (_) => const VideoMakerPage())), const Color(0xFF29B6F6)),

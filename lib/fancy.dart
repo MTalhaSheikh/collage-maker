@@ -157,3 +157,13 @@ class FlThumb extends CustomPainter {
   @override
   bool shouldRepaint(_) => false;
 }
+
+Path heartPath(Rect rr) {
+  final w = rr.width, h = rr.height;
+  return (Path()
+        ..moveTo(w / 2, h)
+        ..cubicTo(-w * .2, h * .55, w * .1, -h * .05, w / 2, h * .3)
+        ..cubicTo(w * .9, -h * .05, w * 1.2, h * .55, w / 2, h)
+        ..close())
+      .shift(rr.topLeft);
+}

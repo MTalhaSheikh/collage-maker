@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'data.dart';
 import 'editor.dart';
+import 'fx.dart';
 
 class TplPreview extends StatelessWidget {
   final Tpl t;
@@ -111,6 +112,7 @@ class _TS extends State<TemplatesPage> {
       body: Stack(children: [
         Positioned(top: -90, right: -80, child: glow(kViolet, 320)),
         Positioned(bottom: 120, left: -130, child: glow(kPink, 300)),
+        const Positioned.fill(child: FxOverlay('stars')),
         SafeArea(
           child: Column(children: [
             Padding(
@@ -129,7 +131,7 @@ class _TS extends State<TemplatesPage> {
                 padding: const EdgeInsets.fromLTRB(16, 10, 16, 24),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 16, crossAxisSpacing: 16, childAspectRatio: .8),
                 itemCount: list.length,
-                itemBuilder: (_, i) => _tile(list[i]),
+                itemBuilder: (_, i) => FadeSlide(index: i, child: Pressable(child: _tile(list[i]))),
               ),
             ),
           ]),
